@@ -1,33 +1,60 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import HeaderImage from "../assets/header.jpeg"
 
 const Header = () => {
+  const [storeName, setStoreName] = useState('')
+  const [currentUser, setCurrentUser] = useState(null)
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!storeName.trim()) {
+      alert('Please enter a store name')
+      return
+    }
+    // placeholder: wire to API or parent handler
+    alert(`Store registered: ${storeName}`)
+    setStoreName('')
+  }
+
+  useEffect(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user') || 'null')
+      setCurrentUser(u)
+    } catch {
+      setCurrentUser(null)
+    }
+  }, [])
+
   return (
-      <div className='flex justify-around items-center bg-white p-4'>
-          <div>
-              <div className='flex flex-col gap-2'>
-                  <div className=' flex flex-row gap-2'>
-                         <p>B</p>
-                  <p className=' text-blue-600'>Jump start your portfolio</p>
-                
-                  </div>
-                  <div className=''>
-                  <p className=' text-start font-bold text-4xl '>Jump start <br /> your crypto <br /> portfolio</p>
-                    <p className=' text-start mt-5'>Coinbase is the easiest place to buy and sell <br /> cryptocurrency. Sign up and get started today.</p>
-                  </div>
-                  <div className=' flex gap-4 justify-center items-center'>
-                      <input type="email" placeholder='Email address' className=' py-2 px-2 border-2' />
-                      <button className='bg-blue-600 text-white pointer px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300'>
-                        Get Started
-                    </button>
-                 </div>
-              </div>
-          </div>
-          <div className='flex justify-center items-center'>
-              {/* image*/}
-              <img src={HeaderImage} alt="bitcoin" className=' w-[500px] h-[700px]'  />
-          </div>
-    </div>
+    <header className='flex flex-col md:flex-row items-center justify-between gap-6 bg-white p-6 rounded-lg shadow-sm'>
+      <div className='flex-1'>
+        {currentUser && (
+          <div className="mb-2 text-sm text-gray-700">Welcome, <span className="font-semibold">{currentUser.storeName || currentUser.email}</span> 👋</div>
+        )}
+        <h1 className='text-left font-extrabold text-3xl md:text-4xl text-gray-900'>Register your store name now!</h1>
+        <p className='text-left mt-3 text-gray-600 max-w-xl'>With etail.me, anyone can earn their first dollar online. Just start with what you know — it's that easy.</p>
+
+        <form onSubmit={handleSubmit} className='mt-6 flex items-center gap-3'>
+          <label htmlFor='storeName' className='text-gray-700 font-semibold'>My store</label>
+          <input
+            id='storeName'
+            value={storeName}
+            onChange={(e) => setStoreName(e.target.value)}
+            type='text'
+            placeholder='Enter your store name'
+            className='border-2 border-gray-200 focus:ring-2 focus:ring-blue-300 rounded-full px-4 py-2 w-48 md:w-64 transition'
+          />
+
+          <button type='submit' className='bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-500 transition'>
+            Register
+          </button>
+        </form>
+      </div>
+
+      <div className='flex-1 flex justify-center md:justify-end'>
+        <img src={HeaderImage} alt='store illustration' className='max-w-xs md:max-w-md w-full h-auto object-cover rounded-md shadow-md' />
+      </div>
+    </header>
   )
 }
 
